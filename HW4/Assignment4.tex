@@ -1,0 +1,219 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=C++,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
+\begin{document}
+	
+	\title{CS-224 Object Oriented Programming and Design Methodologies }
+	\author{Spring 2021}
+	\date{Homework 4, March 12, 2021}
+	\maketitle
+	\section{Guidelines}
+	This is the last assignment in this course. The due date for submission is \textbf{Friday 2nd April, 11:59pm}. Late submissions are allowed till \textbf{Sunday 4th April, 11:59pm}, which will be penalized by 20\%.
+	
+	\begin{itemize}
+		\item You need to do this assignment in a group of two persons
+		\item Only one member of the gorup will submit the assignment to LMS
+		\item You need to follow the best programming practices as given in the accompanying document and it is also present on LMS. Failure in doing so will have your marks deducted.
+		\item Submit assignment on time; late submissions will not be accepted.
+		\item Some assignments will require you to submit multiple files. Always Zip and send them.
+		\item It is better to submit incomplete assignment than none at all.
+		\item It is better to submit the work that you have done yourself than what you have plagiarized.
+		\item It is strongly advised that you start working on the assignment the day you get it. Assignments WILL take time.
+		\item Every assignment you submit should be a single zipped file containing all the other files. Suppose your group member's name are Sara Khan, id 0022 and Ali Haider, id 033 so the name of the submitted file should be SaraKhan0022\_AliHaider033.zip
+		\item DO NOT send your assignment to your instructor, if you do I will just mark your assignment as ZERO for not following clear instructions.
+		\item You can be called in for Viva for any assignment that you submit
+	\end{itemize}
+	
+	\newpage
+	
+	\section{HUMania++}
+
+	Refer to HUMania game you developed in HW3, which had following requirements:
+	\begin{tiny}
+	\begin{itemize}
+		\item Create a \texttt{Pigeon} class (see the pigeon.hpp/cpp), that will contain attributes and functions (\texttt{fly, draw}) related to a pigeon. The \texttt{fly} function flies the pigeon gradually to top-right side, and gets back the pigeon to left most corner as they approach at the right most border of the window. Three different images in assets file will be changed back and forth to make the pigeon fly. \texttt{draw} is only drawing the Pigeon object.
+		
+		\item Create an \texttt{Egg} class (create Egg.hpp and Egg.cpp), that will contain attributes and functions (\texttt{drop, draw}) related to egg. \texttt{drop} function makes the egg drop on the floor. Its shape changes to broken egg as it reaches to bottom of screen, and it doesn't move further down. \texttt{draw} function is only drawing the Egg object.
+		
+		\item Create a \texttt{Nest} class (create Nest.hpp and Nest.cpp), that will contain attributes and functions (\texttt{wiggle, draw}) related to Nest. \texttt{wiggle} is making a nest wiggle on the screen (without dropping down). Look at the three images in assets file to make a nest wiggle. \texttt{draw} function is only drawing the Nest object.
+		
+		\item As you click on the screen, one of the above objects is created randomly. You'll maintain three vectors (pigeons, eggs, nests) in \texttt{HUMania.hpp/cpp} to store objects of different classes. The object that you create on the click will be pushed into corresponding vector. Refer to \texttt{HUMania.cpp $ \Rightarrow $ creatObject()}, where you get mouse coordinates.
+		
+		\item Finally, you iterate over all the elements of vectors, and call their corresponding functions to make them animate(fly, drop or wiggle) and draw.
+
+	\end{itemize}
+
+	\end{tiny}
+		
+%	\subsection{Core Task}/
+		After learning inheritance, and pointers in the course you decided to improve this game as: 
+		
+	\begin{itemize}
+			
+		\item Since \texttt{Pigeon, Egg and Nest} are some objects to be drawn on the screen, so a super class, call it \texttt{Unit}, can be implemented to take care of drawing aspects for all these objects. Hence the \texttt{draw} function and \texttt{srcRect, moverRect} can be defined in \texttt{Unit} class, and all the other classes will inherit from this class. \textit{Define Unit.cpp/.hpp separately, also srcRect moverRect can be defined protected}
+		
+		\item Storing the objects in vector was a bad idea, because a copy is made to store in the vectors. Also, vectors usually occupy more space than static arrays, because more memory is allocated to handle future growth. Therefore, you decided to create objects dynamically and store only pointers to those objects in a linked list \texttt{\href{https://en.cppreference.com/w/cpp/container/list}{std::list}}.
+
+		\item If an egg is dropped inside a nest, it hatches a new baby pigeon (a very small size e.g. 5x5, sprout from the same location of nest), that starts flying up-rightwards and increases its size gradually until it becomes adult pigeon. 
+		
+		\item The hatched eggs will be destroyed. 
+		
+		\item Pigeons which reach to right-most boundary of screen are also destroyed now.
+	
+		\item When certain object is destroyed, remove it from its particular list, and delete it from memory.
+		
+		\item When the game ends, all the objects created dynamically will be destroyed.
+		
+	\end{itemize}
+	
+		 
+
+\section{Binary Search Tree -- Time24}
+Design a class \texttt{Time24}, which stores time in 24 hours format. Its constructor initializes the attributes: hours, minutes, seconds. The constructor also adjusts the attributes if any of them is out of range e.g. 65 seconds are adjusted as incrementing 1 in minutes, and setting seconds to 5. Minutes are adjusted as well, and over-flow in minutes are added to hours. Overflow in hours are simply discarded e.g. 26 hours will be adjusted by subtracting 24 from it, hence valid value would be 2.
+
+You have to populate a \href{https://www.programiz.com/dsa/binary-search-tree}{Binary Search Tree (BST)}. The structure of a node in BST is defined as: 
+	
+	  \begin{lstlisting}[frame=single,language=c++]
+		struct BSTNode{
+			BSTNode* left;
+			Time24 data;
+			BSTNode* right;
+		};
+	\end{lstlisting}
+
+	You have to read input.txt file, in which every line contains a time value possibly in invalid format. As you read a time from file, you create a Time24 object and load it into the BST to its proper position. Since, the BST requires to compare ($ < $) the data starting from its root node, for which you can define the $ < $ operator in Time24 class, which compares two time objects with usual notion e.g. 13:20:30 $ < $ 13:25:15. 
+	
+	Finally your program should print entire of BST in-order i.e. the time objects are printed in sorted order, and write the output to a file \path{output.txt}.
+	
+	Example input and their expected output is given below:
+	
+	\begin{lstlisting}[frame=single]
+		Input:
+		10 20 30			// will be adjusted to 		10:20:30
+		23 45 90			// will be adjusted to 		23:46:30
+		14 55 600			// will be adjusted to		15:05:00
+		23 1006 300			// will be adjusted to		15:51:00
+		80 90 1000			// will be adjusted to		09:46:40
+		12 2000 300			// will be adjusted to		21:25:00
+		
+		
+		
+		Output (In-Order from BST):
+		09:46:40
+		10:20:30
+		15:05:00
+		15:51:00
+		21:25:00
+		23:46:30
+	\end{lstlisting}
+	
+	\section{\texttt{std::list} demo}
+	\begin{lstlisting}[frame=single,language=c++]
+#include<list>
+#include<iostream>
+
+using namespace std;
+
+class Distance{
+	int feet, inches;
+	public:
+	Distance(int ft, int in): feet(ft), inches(in){}
+	void show(){
+		cout<<feet<<"'"<<inches<<'"'<<endl;
+	}
+};
+
+int main(){
+	list<Distance*> l1; // Create a list that can store Distance pointers
+	l1.push_back(new Distance(5, 2)); // create an object dynamically, and store pointer to l1
+	l1.push_back(new Distance(2, 2));
+	l1.push_back(new Distance(1, 3));
+	l1.push_back(new Distance(8, 5));
+	l1.push_back(new Distance(3, 1));
+	
+	// It can't be indexed, as it's a linked list
+	// We can use iterators to access every element in the list
+	
+	for(list<Distance*>::iterator it=l1.begin(); it!=l1.end(); it++)
+		(*it)->show(); //*it returns you the pointers stored earlier
+	
+	// Let's delete the memory allocated dynamically    
+	for(list<Distance*>::iterator it=l1.begin(); it!=l1.end(); it++){
+		delete *it;	// Pointer is deleted, hence now it's invalid to use.
+		*it = NULL; //always a good practice to assign NULL to invalid pointer.
+	}
+
+	// Clear all the contents of the list
+	l1.clear();
+	
+	return 0;
+}
+	\end{lstlisting}
+	\section{Guidelines}
+	\begin{itemize}
+		\item Sample code is there for your benefit. If you are going to use it, understand how it works. 
+		
+		\item You do not need to follow the code given exactly. You can make changes where you see fit provided that it makes sense.
+		
+		\item Make the class declarations in hpp files, and provide function implementations in cpp files. Don't use hpp files for implementation purposes.
+		
+		\item You need to define separate \path{*.hpp} and \path{*.cpp} files for all the classes.
+		
+		\item A general rule of thumb is that all attributes in a class are private/protected.
+		
+		\item Where necessary, declare your own functions inside classes. Make sure why you would keep a function as private or public.	
+
+		\item Lazy Foo tutorial are helpful to learn working in SDL \url{https://lazyfoo.net/tutorials/SDL/index.php}. 
+		
+		\item You should take \url{www.cplusplus.com} and \url{www.cppreference.com} as primary web source to search about C++.
+		
+		\item Complete reference for std::list can be found at: \url{https://en.cppreference.com/w/cpp/container/list}
+		
+		\item Refer to this link for BST \url{https://www.programiz.com/dsa/binary-search-tree}
+		
+		\item When you delete an object from within a list, it requires some consideration, refer to this document: \url{https://www.techiedelight.com/remove-elements-list-iterating-cpp/}
+	\end{itemize}
+
+\section{Rubrics}
+	\begin{table}[h]
+	\centering
+	\begin{tabular}{llc}
+		\toprule
+
+%		Coding	& The code followed best practices guideline &	2 \\
+		OOP Concepts & The code followed best OOP practices &  2\\
+		Inheritance & Implemented inheritance as required & 2\\
+		Dynamic Memory & Objects created dynamically, and are destroyed properly & 2\\
+%		Memory management &	Memory is properly managed	& 4\\
+		Logic	& Required functionality is fully implemented	& 4 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Grading Rubric}
+	\label{Grading}
+	\end{table}
+	
+\end{document}
